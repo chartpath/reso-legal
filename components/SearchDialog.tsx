@@ -79,7 +79,10 @@ export function SearchDialog() {
           <DialogHeader>
             <DialogTitle>Ask a legal question ⚖️</DialogTitle>
             <DialogDescription>
-              Currently targeting New Brunswick residential tenancy and employment law
+              Note: currently based on <span className="font-semibold">landlord-tenant</span>,{' '}
+              <span className="font-semibold">employment</span>, and{' '}
+              <span className="font-semibold">labour</span> law in{' '}
+              <span className="font-semibold">New Brunswick</span>. More to come!
             </DialogDescription>
             <hr />
             <button className="absolute top-0 right-2 p-2" onClick={() => setOpen(false)}>
