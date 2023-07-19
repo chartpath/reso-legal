@@ -137,6 +137,8 @@ export default async function handler(req: NextRequest) {
         If possible, explain your answer and give examples.
         
         Try to limit your answer to no more than ten sentences.
+
+        Always use Canadian or British spelling.
       `}
 
       Legal knowledge:

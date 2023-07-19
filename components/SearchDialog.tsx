@@ -173,6 +173,34 @@ export function SearchDialog() {
                   Are there protections against discrimination for tenants?
                 </button>
               </div>
+              <div className="text-sm text-gray-500 dark:text-gray-100">
+                <button
+                  type="button"
+                  className="px-1.5 py-0.5
+                  bg-slate-50 dark:bg-gray-500
+                  hover:bg-slate-100 dark:hover:bg-gray-600
+                  rounded border border-slate-200 dark:border-slate-600
+                  transition-colors"
+                  onClick={(_) =>
+                    setQuery('What is severance pay in lieu of notice of termination from a job?')
+                  }
+                >
+                  What is severance pay in lieu of notice of termination from a job?
+                </button>
+              </div>
+              <div className="text-sm text-gray-500 dark:text-gray-100">
+                <button
+                  type="button"
+                  className="px-1.5 py-0.5
+                  bg-slate-50 dark:bg-gray-500
+                  hover:bg-slate-100 dark:hover:bg-gray-600
+                  rounded border border-slate-200 dark:border-slate-600
+                  transition-colors"
+                  onClick={(_) => setQuery('How can I unionize my workplace?')}
+                >
+                  How can I unionize my workplace?
+                </button>
+              </div>
             </div>
             <DialogFooter>
               <Button type="submit" className="bg-red-500">
