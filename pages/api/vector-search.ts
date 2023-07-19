@@ -104,7 +104,7 @@ export default async function handler(req: NextRequest) {
       const encoded = tokenizer.encode(content)
       tokenCount += encoded.text.length
 
-      if (tokenCount >= 2000) {
+      if (tokenCount >= 3000) {
         break
       }
 
@@ -136,8 +136,7 @@ export default async function handler(req: NextRequest) {
 
         If possible, explain your answer and give examples.
         
-        Try to keep it to no more 
-        than eight sentences.
+        Try to limit your answer to no more than ten sentences.
       `}
 
       Legal knowledge:
@@ -156,9 +155,9 @@ export default async function handler(req: NextRequest) {
     }
 
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-16k',
       messages: [chatMessage],
-      max_tokens: 512,
+      max_tokens: 1024,
       temperature: 0,
       stream: true,
     })

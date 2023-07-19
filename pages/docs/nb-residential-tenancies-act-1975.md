@@ -22,7 +22,7 @@ Stable link to this version:
 
 Citation to this version:
 
-Residential Tenancies Act, SNB 1975, c R-10.2, <[https://canlii.ca/t/55vbt](https://canlii.ca/t/55vbt)\> retrieved on 2023-07-18
+Residential Tenancies Act, SNB 1975, c R-10.2, [https://canlii.ca/t/55vbt](https://canlii.ca/t/55vbt) retrieved on 2023-07-18
 
 Currency:
 

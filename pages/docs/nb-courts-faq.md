@@ -67,8 +67,6 @@ Dress as you would to attend a job interview or to go to a religious service. Fo
 
 ## [Provincial Court Statistics](https://www2.gnb.ca/content/gnb/en/departments/public-safety/justice/content/nb-provincial-courts-statistics.html)
 
-$(document).ready(function() { $('div.imagecontainer img').each(function(){ var $img = $(this); var title = $img.attr('title') var alt_text = $img.attr('alt') var class_text = $img.attr('class') var src_text = $img.attr('src') var newalt_text = $.trim(alt_text); var new_title = $.trim(title); var new_src = $.trim(src_text); var new_class = $.trim(class_text); if((new_class.indexOf("img-responsive") > -1) ||new_src.indexOf("/etc/designs/default/0.gif") > -1){ new_class =new_class; } else{ new_class=new_class+" img-responsive" } $img.attr('alt', newalt_text); $img.attr('title', new_title); $img.attr('class', new_class); }); });
-
 ### Related Links
 
 - [Justice and Public Safety](https://www2.gnb.ca/content/gnb/en/departments/public-safety.html)
