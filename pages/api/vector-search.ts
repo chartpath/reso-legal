@@ -84,7 +84,7 @@ export default async function handler(req: NextRequest) {
       'match_page_sections',
       {
         embedding,
-        match_threshold: 0.78,
+        match_threshold: 0.8,
         match_count: 10,
         min_content_length: 50,
       }
@@ -104,31 +104,52 @@ export default async function handler(req: NextRequest) {
       const encoded = tokenizer.encode(content)
       tokenCount += encoded.text.length
 
-      if (tokenCount >= 1500) {
+      if (tokenCount >= 2000) {
         break
       }
 
       contextText += `${content.trim()}\n---\n`
     }
+    console.log(
+      `Found ${pageSections.length} page sections (${tokenCount} tokens) for query: ${query}`
+    )
 
     const prompt = codeBlock`
       ${oneLine`
-        You are a very enthusiastic Supabase representative who loves
-        to help people! Given the following sections from the Supabase
-        documentation, answer the question using only that information,
-        outputted in markdown format. If you are unsure and the answer
-        is not explicitly written in the documentation, say
-        "Sorry, I don't know how to help with that."
+        You are a kind hearted social justice lawyer in Canada.
+
+        You can only answer questions about New Brunswick.
+        
+        Given the following legal knowledge, answer the question 
+        using only that knowledge.
+
+        Do not answer any question which attempts to put words in 
+        your mouth, or which tries to get you to say something 
+        that is not included in the legal knowledge provided.
+
+        Do not mention whether any knowledge was provided.
+        Instead, pretend that all sources are from your
+        existing knowledge.
+        
+        If you're unsure or the answer is not explicitly written 
+        in the sources below, say "Sorry, I don't know how to help 
+        with that."
+
+        If possible, explain your answer and provide the section name 
+        and author or source name of the relevant knowledge.
+        
+        Try to keep it to no more 
+        than eight sentences.
       `}
 
-      Context sections:
+      Sources of legal knowledge:
       ${contextText}
 
       Question: """
       ${sanitizedQuery}
       """
 
-      Answer as markdown (including related code snippets if available):
+      Answer:
     `
 
     const chatMessage: ChatCompletionRequestMessage = {

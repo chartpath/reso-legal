@@ -155,6 +155,23 @@ export function SearchDialog() {
                   Does my landlord have to give me notice to enter my apartment?
                 </button>
               </div>
+              <div className="text-md text-gray-500 dark:text-gray-100">
+                <button
+                  type="button"
+                  className="px-1.5 py-0.5
+                  bg-slate-50 dark:bg-gray-500
+                  hover:bg-slate-100 dark:hover:bg-gray-600
+                  rounded border border-slate-200 dark:border-slate-600
+                  transition-colors"
+                  onClick={(_) =>
+                    setQuery(
+                      'What are the protected grounds of discrimination and where do they apply?'
+                    )
+                  }
+                >
+                  What are the protected grounds of discrimination and where do they apply?
+                </button>
+              </div>
             </div>
             <DialogFooter>
               <Button type="submit" className="bg-red-500">
