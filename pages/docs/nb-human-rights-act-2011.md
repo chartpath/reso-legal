@@ -22,7 +22,7 @@ Stable link to this version:
 
 Citation to this version:
 
-Human Rights Act, RSNB 2011, c 171, <[https://canlii.ca/t/53mkm](https://canlii.ca/t/53mkm)\> retrieved on 2023-07-18
+Human Rights Act, RSNB 2011, c 171, [https://canlii.ca/t/53mkm](https://canlii.ca/t/53mkm) retrieved on 2023-07-18
 
 Currency:
 

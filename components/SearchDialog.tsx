@@ -75,7 +75,7 @@ export function SearchDialog() {
         </kbd>{' '}
       </button>
       <Dialog open={open}>
-        <DialogContent className="sm:max-w-[850px] text-black">
+        <DialogContent className="sm:max-w-xl md:max-w-4xl text-black">
           <DialogHeader>
             <DialogTitle>Ask a legal question ⚖️</DialogTitle>
             <DialogDescription>
@@ -116,8 +116,8 @@ export function SearchDialog() {
               )}
 
               {completion && !error ? (
-                <div className="flex items-center gap-4 dark:text-white">
-                  <span className="bg-green-500 p-2 w-8 h-8 rounded-full text-center flex items-center justify-center">
+                <div className="flex items-start gap-6 dark:text-white overflow-y-scroll max-h-44 py-2">
+                  <span className="bg-green-500 p-2 w-8 h-8 rounded-full flex items-center">
                     <Wand width={18} className="text-white" />
                   </span>
                   <h3 className="font-semibold">Answer:</h3>
@@ -139,8 +139,8 @@ export function SearchDialog() {
                   }`}
                 />
               </div>
-              <h2 className="text-xl text-gray-500 dark:text-gray-100">Popular questions:</h2>
-              <div className="text-md text-gray-500 dark:text-gray-100">
+              <h2 className="text-xl text-gray-500 dark:text-gray-100">Example questions:</h2>
+              <div className="text-sm text-gray-500 dark:text-gray-100">
                 <button
                   type="button"
                   className="px-1.5 py-0.5
@@ -155,20 +155,7 @@ export function SearchDialog() {
                   Does my landlord have to give me notice to enter my apartment?
                 </button>
               </div>
-              <div className="text-md text-gray-500 dark:text-gray-100">
-                <button
-                  type="button"
-                  className="px-1.5 py-0.5
-                  bg-slate-50 dark:bg-gray-500
-                  hover:bg-slate-100 dark:hover:bg-gray-600
-                  rounded border border-slate-200 dark:border-slate-600
-                  transition-colors"
-                  onClick={(_) => setQuery('What are the protected grounds of discrimination?')}
-                >
-                  What are the protected grounds of discrimination?
-                </button>
-              </div>
-              <div className="text-md text-gray-500 dark:text-gray-100">
+              <div className="text-sm text-gray-500 dark:text-gray-100">
                 <button
                   type="button"
                   className="px-1.5 py-0.5
