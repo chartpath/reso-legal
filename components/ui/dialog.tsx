@@ -6,6 +6,10 @@ import { X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ weight: ['400', '500', '700'], subsets: ['latin'] })
+
 const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
@@ -43,6 +47,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
+        inter.className,
         'animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 sm:zoom-in-90 data-[state=open]:sm:slide-in-from-bottom-0 fixed z-50 grid w-full gap-4 rounded-b-lg bg-white p-6 sm:max-w-lg sm:rounded-lg',
         'dark:bg-slate-900',
         className

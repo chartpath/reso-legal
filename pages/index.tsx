@@ -1,11 +1,8 @@
 import Head from 'next/head'
-import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { SearchDialog } from '@/components/SearchDialog'
 import Image from 'next/image'
 import Link from 'next/link'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
@@ -17,8 +14,26 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        <div className="items-center justify-center text-center">
+          <h1 className="text-3xl text-slate-950 font-semibold">Reso Legal</h1>
+          <h5 className="pt-0">Bridging the gap in access to legal information</h5>
+        </div>
         <div className={styles.center}>
           <SearchDialog />
+        </div>
+
+        <div className="py-8 w-3/4 flex items-center justify-center space-x-6">
+          <p className="text-sm text-slate-400 mr-2">
+            Disclaimer: This site provides general information only and is not to be used as legal
+            advice for specific legal problems. If you need legal help contact your local legal aid
+            office or a lawyer. Every reasonable effort has been made to ensure that the information
+            presented on this website is current and accurate. At any time, some details may not yet
+            reflect recent changes. Links from this site to other websites are provided for the
+            convenience of users. Reso Legal does not create or maintain these websites and does not
+            accept any responsibility for their content and accuracy. Reso Legal will not be liable
+            for any loss or damages of any nature, either direct or indirect, arising from use of
+            the information provided on this website or any website to which this site is linked.
+          </p>
         </div>
 
         {/* <div className="py-8 w-full flex items-center justify-center space-x-6">
