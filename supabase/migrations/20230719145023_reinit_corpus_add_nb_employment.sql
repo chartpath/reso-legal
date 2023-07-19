@@ -1,19 +1,17 @@
--- removing self-referential pages, TODO use LTREE for hierarchy
-ALTER TABLE "public"."nods_page" DROP COLUMN IF EXISTS "parent_page_id";
 
-INSERT INTO "public"."nods_page" ("id", "path", "checksum", "meta", "type", "source") VALUES
-(1, '/docs/nb-gov-landlord-responsibilities', '53s1DT16EsAzHPETjaSxpL0N76rtSEokMV8Dd78bk9k=', NULL, 'markdown', 'guide'),
-(2, '/docs/nb-gov-rentals-no-discimination', 'EZmR+Y+wN0rrzhYWbGlSIO+PJXWJBIY7He9PTbErAHg=', NULL, 'markdown', 'guide'),
-(3, '/docs/nb-gov-tenant-rights', 'tWB1t9SAtbhgM2VJA26/S+pcVR0G+X1xC+TJEU2J5XA=', NULL, 'markdown', 'guide'),
-(4, '/docs/nb-provincial-court-info', 'lFA8j9iTqTjduwTP8AJQC2TDODsHwTwVDWHb/I5Q5OI=', NULL, 'markdown', 'guide'),
-(5, '/docs/nb-tenants-tribunal-info', 'FsWVjoJrAjSKWl8lYpCB0eG0iCUso0vjHl3EHzETxGk=', NULL, 'markdown', 'guide'),
-(6, '/docs/nb-employment-standards-act-1982', 'UdDZv+a19Ji0ao97AGvBTPXlIw8IWyFDhvL3GHntfYw=', NULL, 'markdown', 'guide'),
-(7, '/docs/nb-human-rights-act-2011', 'GF4q3JWKhFoRTwdZXeP3msacjZmidwhDleMxTfCGSqc=', NULL, 'markdown', 'guide'),
-(8, '/docs/nb-residential-tenancies-act-1975', 'H9KGIzFOUE6CbCfjHqJlUauL+Ay7Gg9LpQ6sqseTcf4=', NULL, 'markdown', 'guide'),
-(9, '/docs/nb-courts-faq', 'o1yYM72Frge1wifBu1KPU/hvfUv1QxlQEICLcl11PQg=', NULL, 'markdown', 'guide') 
+INSERT INTO "public"."nods_page" ("id", "path", "checksum", "meta", "type", "source", "parent_page_id") VALUES
+(1, '/docs/nb-gov-landlord-responsibilities', '53s1DT16EsAzHPETjaSxpL0N76rtSEokMV8Dd78bk9k=', NULL, 'markdown', 'guide', NULL),
+(2, '/docs/nb-gov-rentals-no-discimination', 'EZmR+Y+wN0rrzhYWbGlSIO+PJXWJBIY7He9PTbErAHg=', NULL, 'markdown', 'guide', NULL),
+(3, '/docs/nb-gov-tenant-rights', 'tWB1t9SAtbhgM2VJA26/S+pcVR0G+X1xC+TJEU2J5XA=', NULL, 'markdown', 'guide', NULL),
+(4, '/docs/nb-provincial-court-info', 'lFA8j9iTqTjduwTP8AJQC2TDODsHwTwVDWHb/I5Q5OI=', NULL, 'markdown', 'guide', NULL),
+(5, '/docs/nb-tenants-tribunal-info', 'FsWVjoJrAjSKWl8lYpCB0eG0iCUso0vjHl3EHzETxGk=', NULL, 'markdown', 'guide', NULL),
+(6, '/docs/nb-employment-standards-act-1982', 'UdDZv+a19Ji0ao97AGvBTPXlIw8IWyFDhvL3GHntfYw=', NULL, 'markdown', 'guide', NULL),
+(7, '/docs/nb-human-rights-act-2011', 'GF4q3JWKhFoRTwdZXeP3msacjZmidwhDleMxTfCGSqc=', NULL, 'markdown', 'guide', NULL),
+(8, '/docs/nb-residential-tenancies-act-1975', 'H9KGIzFOUE6CbCfjHqJlUauL+Ay7Gg9LpQ6sqseTcf4=', NULL, 'markdown', 'guide', NULL),
+(9, '/docs/nb-courts-faq', 'o1yYM72Frge1wifBu1KPU/hvfUv1QxlQEICLcl11PQg=', NULL, 'markdown', 'guide', NULL)
     ON CONFLICT (id) DO 
-    UPDATE SET ("path", "checksum", "meta", "type", "source") = 
-        (EXCLUDED.path, EXCLUDED.checksum, EXCLUDED.meta, EXCLUDED.type, EXCLUDED.source);
+    UPDATE SET ("path", "checksum", "meta", "type", "source", "parent_page_id") = 
+        (EXCLUDED.path, EXCLUDED.checksum, EXCLUDED.meta, EXCLUDED.type, EXCLUDED.source, EXCLUDED.parent_page_id);
 
 INSERT INTO "public"."nods_page_section" ("id", "page_id", "content", "token_count", "embedding", "slug", "heading") VALUES
 (1, 1, '# [Landlord responsibilities](https://www2.gnb.ca/content/gnb/en/corporate/promo/renting-in-new-brunswick/landlord-rights-and-responsibilities/landlord-responsibilities.html)
