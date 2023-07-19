@@ -15,8 +15,8 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className="items-center justify-center text-center">
-          <h1 className="text-3xl text-slate-950 font-semibold">Reso Legal</h1>
-          <h5 className="pt-0">Bridging the gap in access to legal information</h5>
+          <Image src={'/logo.png'} width="300" height="99" alt="logo" />
+          <h5 className="pt-10">Bridging the gap in access to legal information</h5>
         </div>
         <div className={styles.center}>
           <SearchDialog />

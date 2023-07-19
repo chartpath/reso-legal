@@ -97,14 +97,19 @@ export default async function handler(req: NextRequest) {
     const tokenizer = new GPT3Tokenizer({ type: 'gpt3' })
     let tokenCount = 0
     let contextText = ''
+    let citations = []
 
     for (let i = 0; i < pageSections.length; i++) {
       const pageSection = pageSections[i]
       const content = pageSection.content
       const encoded = tokenizer.encode(content)
       tokenCount += encoded.text.length
+      citations.push({
+        page_id: pageSection.page_id,
+        heading: pageSection.heading,
+      })
 
-      if (tokenCount >= 3000) {
+      if (tokenCount >= 8000) {
         break
       }
 
