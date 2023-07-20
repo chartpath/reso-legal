@@ -43,13 +43,15 @@ export default async function handler(req: NextRequest) {
       throw new UserError('Missing request data')
     }
 
-    const { prompt: query } = requestData
+    const { messages } = requestData
 
-    if (!query) {
-      throw new UserError('Missing query in request data')
+    if (messages.length === 0) {
+      throw new UserError('Missing messages in request data')
     }
 
     const supabaseClient = createClient(supabaseUrl, supabaseServiceKey)
+
+    const { content: query } = messages[messages.length - 1]
 
     // Moderate the content to comply with OpenAI T&C
     const sanitizedQuery = query.trim()
