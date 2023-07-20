@@ -16,9 +16,16 @@ import { X, Loader, User, Frown, CornerDownLeft, Search, Wand } from 'lucide-rea
 
 export function SearchDialog() {
   const [open, setOpen] = React.useState(false)
+  const [done, setDone] = React.useState(false)
+
+  const onFinish = () => {
+    console.log('done')
+    setDone(true)
+  }
 
   const { messages, input, setInput, handleInputChange, handleSubmit, isLoading, error } = useChat({
     api: '/api/vector-search',
+    onFinish,
   })
 
   React.useEffect(() => {
@@ -118,6 +125,9 @@ export function SearchDialog() {
                         </div>
                       ))
                     : null}
+                  {done && !isLoading && (
+                    <div className="flex items-center gap-4 text-slate-200">Citations:</div>
+                  )}
                 </div>
               ) : null}
 
