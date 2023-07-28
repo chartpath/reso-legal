@@ -43,13 +43,15 @@ export default async function handler(req: NextRequest) {
       throw new UserError('Missing request data')
     }
 
-    const { prompt: query } = requestData
+    const { messages } = requestData
 
-    if (!query) {
-      throw new UserError('Missing query in request data')
+    if (messages.length === 0) {
+      throw new UserError('Missing messages in request data')
     }
 
     const supabaseClient = createClient(supabaseUrl, supabaseServiceKey)
+
+    const { content: query } = messages[messages.length - 1]
 
     // Moderate the content to comply with OpenAI T&C
     const sanitizedQuery = query.trim()
@@ -97,14 +99,19 @@ export default async function handler(req: NextRequest) {
     const tokenizer = new GPT3Tokenizer({ type: 'gpt3' })
     let tokenCount = 0
     let contextText = ''
+    let citations = []
 
     for (let i = 0; i < pageSections.length; i++) {
       const pageSection = pageSections[i]
       const content = pageSection.content
       const encoded = tokenizer.encode(content)
       tokenCount += encoded.text.length
+      citations.push({
+        page_id: pageSection.page_id,
+        heading: pageSection.heading,
+      })
 
-      if (tokenCount >= 3000) {
+      if (tokenCount >= 8000) {
         break
       }
 

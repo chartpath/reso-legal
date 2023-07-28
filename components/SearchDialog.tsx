@@ -11,15 +11,20 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { useCompletion } from 'ai/react'
+import { useChat } from 'ai/react'
 import { X, Loader, User, Frown, CornerDownLeft, Search, Wand } from 'lucide-react'
 
 export function SearchDialog() {
   const [open, setOpen] = React.useState(false)
-  const [query, setQuery] = React.useState<string>('')
+  const [done, setDone] = React.useState(false)
 
-  const { complete, completion, isLoading, error } = useCompletion({
+  const onFinish = () => {
+    setDone(true)
+  }
+
+  const { messages, input, setInput, handleInputChange, handleSubmit, isLoading, error } = useChat({
     api: '/api/vector-search',
+    onFinish,
   })
 
   React.useEffect(() => {
@@ -40,13 +45,6 @@ export function SearchDialog() {
 
   function handleModalToggle() {
     setOpen(!open)
-    setQuery('')
-  }
-
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault()
-    console.log(query)
-    complete(query)
   }
 
   return (
@@ -92,18 +90,12 @@ export function SearchDialog() {
 
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4 text-slate-700">
-              {query && (
+              {input && (
                 <div className="flex gap-4">
                   <span className="bg-slate-100 dark:bg-slate-300 p-2 w-8 h-8 rounded-full text-center flex items-center justify-center">
                     <User width={18} />{' '}
                   </span>
-                  <p className="mt-0.5 font-semibold text-slate-700 dark:text-slate-100">{query}</p>
-                </div>
-              )}
-
-              {isLoading && (
-                <div className="animate-spin relative flex w-5 h-5 ml-2">
-                  <Loader />
+                  <p className="mt-0.5 font-semibold text-slate-700 dark:text-slate-100">{input}</p>
                 </div>
               )}
 
@@ -118,27 +110,49 @@ export function SearchDialog() {
                 </div>
               )}
 
-              {completion && !error ? (
-                <div className="flex items-start gap-6 dark:text-white overflow-y-scroll max-h-44 py-2">
-                  <span className="bg-green-500 p-2 w-8 h-8 rounded-full flex items-center">
-                    <Wand width={18} className="text-white" />
-                  </span>
-                  <h3 className="font-semibold">Answer:</h3>
-                  {completion}
+              {messages.length > 0 && !error ? (
+                <div className="items-start gap-6 dark:text-white overflow-y-scroll max-h-44 py-2">
+                  {messages.length > 0
+                    ? messages.map((m) => (
+                        <div key={m.id} className="whitespace-pre-wrap py-4">
+                          {m.role === 'user' ? (
+                            <span className="font-bold">
+                              Me: <br />
+                            </span>
+                          ) : (
+                            <span className="font-bold">
+                              Reso Legal: <br />
+                            </span>
+                          )}
+                          {m.content}
+                        </div>
+                      ))
+                    : null}
+                  {done && !isLoading && (
+                    <div className="flex items-center gap-4 text-slate-200">
+                      Citations coming soon...
+                    </div>
+                  )}
                 </div>
               ) : null}
+
+              {isLoading && (
+                <div className="animate-spin relative flex w-5 h-5 ml-2">
+                  <Loader />
+                </div>
+              )}
 
               <div className="relative">
                 <Input
                   placeholder="Ask a question..."
                   name="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  value={input}
+                  onChange={handleInputChange}
                   className="col-span-3"
                 />
                 <CornerDownLeft
                   className={`absolute top-3 right-5 h-4 w-4 text-gray-300 transition-opacity ${
-                    query ? 'opacity-100' : 'opacity-0'
+                    input ? 'opacity-100' : 'opacity-0'
                   }`}
                 />
               </div>
@@ -152,7 +166,7 @@ export function SearchDialog() {
                   rounded border border-slate-200 dark:border-slate-600
                   transition-colors"
                   onClick={(_) =>
-                    setQuery('Does my landlord have to give me notice to enter my apartment?')
+                    setInput('Does my landlord have to give me notice to enter my apartment?')
                   }
                 >
                   Does my landlord have to give me notice to enter my apartment?
@@ -167,7 +181,7 @@ export function SearchDialog() {
                   rounded border border-slate-200 dark:border-slate-600
                   transition-colors"
                   onClick={(_) =>
-                    setQuery('Are there protections against discrimination for tenants?')
+                    setInput('Are there protections against discrimination for tenants?')
                   }
                 >
                   Are there protections against discrimination for tenants?
@@ -182,7 +196,7 @@ export function SearchDialog() {
                   rounded border border-slate-200 dark:border-slate-600
                   transition-colors"
                   onClick={(_) =>
-                    setQuery('What is severance pay in lieu of notice of termination from a job?')
+                    setInput('What is severance pay in lieu of notice of termination from a job?')
                   }
                 >
                   What is severance pay in lieu of notice of termination from a job?
@@ -196,7 +210,7 @@ export function SearchDialog() {
                   hover:bg-slate-100 dark:hover:bg-gray-600
                   rounded border border-slate-200 dark:border-slate-600
                   transition-colors"
-                  onClick={(_) => setQuery('How can I unionize my workplace?')}
+                  onClick={(_) => setInput('How can I unionize my workplace?')}
                 >
                   How can I unionize my workplace?
                 </button>

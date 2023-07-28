@@ -49,7 +49,7 @@ const DialogContent = React.forwardRef<
       className={cn(
         inter.className,
         'animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 sm:zoom-in-90 data-[state=open]:sm:slide-in-from-bottom-0 fixed z-50 grid w-full gap-4 rounded-b-lg bg-white p-6 sm:max-w-lg sm:rounded-lg',
-        'dark:bg-slate-900',
+        'dark:bg-slate-900 bg-opacity-80 dark:bg-opacity-80',
         className
       )}
       {...props}

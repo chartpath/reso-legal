@@ -8,16 +8,19 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Reso Legal</title>
+        <title>ResoLegal</title>
         <meta name="description" content="Bridging the gap in access to legal information." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div className="items-center justify-center text-center">
-          <h1 className="text-3xl text-slate-950 font-semibold">Reso Legal</h1>
-          <h5 className="pt-0">Bridging the gap in access to legal information</h5>
+        <div className="flex items-center justify-center text-center">
+          <Image src={'/logo.png'} width="100" height="100" alt="logo" />
+          <h1 className="text-3xl text-slate-900 dark:text-slate-100 font-semibold pl-4 tracking-tight">
+            Reso Legal
+          </h1>
         </div>
+        <h4>Bridging the gap in access to legal information</h4>
         <div className={styles.center}>
           <SearchDialog />
         </div>
