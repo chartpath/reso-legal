@@ -129,7 +129,9 @@ export function SearchDialog() {
                       ))
                     : null}
                   {done && !isLoading && (
-                    <div className="flex items-center gap-4 text-slate-200">Citations:</div>
+                    <div className="flex items-center gap-4 text-slate-200">
+                      Citations coming soon...
+                    </div>
                   )}
                 </div>
               ) : null}
