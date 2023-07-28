@@ -17,7 +17,7 @@ export default function Home() {
         <div className="flex items-center justify-center text-center">
           <Image src={'/logo.png'} width="100" height="100" alt="logo" />
           <h1 className="text-3xl text-slate-900 dark:text-slate-100 font-semibold pl-4 tracking-tight">
-            Reso Legal
+            ResoLegal
           </h1>
         </div>
         <h4>Bridging the gap in access to legal information</h4>
