@@ -19,7 +19,6 @@ export function SearchDialog() {
   const [done, setDone] = React.useState(false)
 
   const onFinish = () => {
-    console.log('done')
     setDone(true)
   }
 
@@ -117,9 +116,13 @@ export function SearchDialog() {
                     ? messages.map((m) => (
                         <div key={m.id} className="whitespace-pre-wrap py-4">
                           {m.role === 'user' ? (
-                            <span className="font-bold">Me: </span>
+                            <span className="font-bold">
+                              Me: <br />
+                            </span>
                           ) : (
-                            <span className="font-bold">Reso Legal: </span>
+                            <span className="font-bold">
+                              Reso Legal: <br />
+                            </span>
                           )}
                           {m.content}
                         </div>

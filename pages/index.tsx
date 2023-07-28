@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Reso Legal</title>
+        <title>ResoLegal</title>
         <meta name="description" content="Bridging the gap in access to legal information." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
