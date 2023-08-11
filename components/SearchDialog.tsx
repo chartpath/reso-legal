@@ -202,7 +202,7 @@ export function SearchDialog() {
                   What is severance pay in lieu of notice of termination from a job?
                 </button>
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-100">
+              {/* <div className="text-sm text-gray-500 dark:text-gray-100">
                 <button
                   type="button"
                   className="px-1.5 py-0.5
@@ -214,7 +214,7 @@ export function SearchDialog() {
                 >
                   How can I unionize my workplace?
                 </button>
-              </div>
+              </div> */}
             </div>
             <DialogFooter>
               <Button type="submit" className="bg-red-500">
