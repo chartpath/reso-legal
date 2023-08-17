@@ -152,13 +152,9 @@ export function SearchDialog() {
                 </div>
               ) : null}
 
-              {isLoading && (
-                <div className="animate-spin relative flex w-5 h-5 text-slate-400">
-                  <Loader />
-                </div>
-              )}
+              {isLoading && <Loader className="animate-spin w-5 h-5 text-slate-400" />}
 
-              {done && !isLoading && <ChevronDown className="text-slate-400" />}
+              {done && !isLoading && <ChevronDown className="w-5 h-5 text-slate-400" />}
 
               <div className="relative">
                 <Input
