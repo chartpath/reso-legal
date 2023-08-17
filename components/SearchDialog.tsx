@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { useChat } from 'ai/react'
-import { X, Loader, User, Frown, CornerDownLeft, Search, Wand } from 'lucide-react'
+import { X, Loader, User, Frown, CornerDownLeft, Search, ChevronDown } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 
 export function SearchDialog() {
   const [open, setOpen] = React.useState(false)
@@ -111,7 +112,7 @@ export function SearchDialog() {
               )}
 
               {messages.length > 0 && !error ? (
-                <div className="items-start gap-6 dark:text-white overflow-y-scroll max-h-44 py-2">
+                <div className="items-start dark:text-white overflow-y-scroll max-h-44 py-2">
                   {messages.length > 0
                     ? messages.map((m) => (
                         <div key={m.id} className="whitespace-pre-wrap py-4">
@@ -124,23 +125,40 @@ export function SearchDialog() {
                               Reso Legal: <br />
                             </span>
                           )}
-                          {m.content}
+                          <ReactMarkdown
+                            components={{
+                              ul: ({ node, ...props }) => (
+                                <ul
+                                  className="pl-4 list-disc list-outside gap-0 -space-y-6 -mt-10 -my-4"
+                                  {...props}
+                                />
+                              ),
+                              a: (
+                                { node, ...props } // eslint-disable-line
+                              ) => (
+                                <a
+                                  className="text-slate-700 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
+                                  target="_blank"
+                                  {...props}
+                                />
+                              ),
+                            }}
+                          >
+                            {m.content}
+                          </ReactMarkdown>
                         </div>
                       ))
                     : null}
-                  {done && !isLoading && (
-                    <div className="flex items-center gap-4 text-slate-200">
-                      Citations coming soon...
-                    </div>
-                  )}
                 </div>
               ) : null}
 
               {isLoading && (
-                <div className="animate-spin relative flex w-5 h-5 ml-2">
+                <div className="animate-spin relative flex w-5 h-5 text-slate-400">
                   <Loader />
                 </div>
               )}
+
+              {done && !isLoading && <ChevronDown className="text-slate-400" />}
 
               <div className="relative">
                 <Input

@@ -11,6 +11,8 @@ import {
 } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { ApplicationError, UserError } from '@/lib/errors'
+import { Readable, PassThrough } from 'readable-stream'
+import { write } from 'fs'
 
 const openAiKey = process.env.OPENAI_KEY
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -99,14 +101,14 @@ export default async function handler(req: NextRequest) {
     const tokenizer = new GPT3Tokenizer({ type: 'gpt3' })
     let tokenCount = 0
     let contextText = ''
-    let citations = []
+    let citationSections = []
 
     for (let i = 0; i < pageSections.length; i++) {
       const pageSection = pageSections[i]
       const content = pageSection.content
       const encoded = tokenizer.encode(content)
       tokenCount += encoded.text.length
-      citations.push({
+      citationSections.push({
         page_id: pageSection.page_id,
         heading: pageSection.heading,
       })
@@ -120,6 +122,37 @@ export default async function handler(req: NextRequest) {
     console.log(
       `Found ${pageSections.length} page sections (${tokenCount} tokens) for query: ${query}`
     )
+
+    const citationPageIds = new Set(citationSections.map((cs) => cs.page_id))
+
+    const { data: citationPagesMeta, error: getCitationsError } = await supabaseClient
+      .from('nods_page')
+      .select('id, author, title, url')
+      .filter('id', 'in', `(${Array.from(citationPageIds)})`)
+
+    if (getCitationsError) {
+      throw new ApplicationError('Failed to get citations', getCitationsError)
+    }
+
+    const citationsRaw = citationSections.map((cs) => {
+      const sectionPage = citationPagesMeta.filter((cp) => cp.id === cs.page_id)[0]
+      return {
+        author: sectionPage.author,
+        title: sectionPage.title,
+        url: sectionPage.url,
+        heading: cs.heading.replace(/[^\w\s]/gi, ''),
+      }
+    })
+
+    const uniqueTitles = new Set()
+    const uniqueHeadings = new Set()
+    const uniqueCitations = await citationsRaw.filter((cr) => {
+      const duplicate = uniqueHeadings.has(cr.heading) && uniqueTitles.has(cr.title)
+      uniqueHeadings.add(cr.heading)
+      uniqueTitles.add(cr.title)
+      return !duplicate
+    })
+    console.log(`Found citations ${JSON.stringify(uniqueCitations)}`)
 
     const prompt = codeBlock`
       ${oneLine`
@@ -177,10 +210,69 @@ export default async function handler(req: NextRequest) {
     }
 
     // Transform the response into a readable stream
-    const stream = OpenAIStream(response)
+    const openAIReadableStream = OpenAIStream(response)
+
+    const openAIReadableStreamReader = openAIReadableStream.getReader()
+
+    const openAIStreamReadable = new Readable({
+      async read() {
+        try {
+          const result = await openAIReadableStreamReader.read()
+
+          if (result.done) {
+            this.push(null)
+          } else {
+            this.push(result.value)
+          }
+        } catch (err) {
+          this.emit('error', err)
+        }
+      },
+    })
+
+    const citationStream = new Readable({
+      // objectMode: true, // enable object mode
+
+      read() {
+        this.push('\n\n**Citations:**\n')
+        // Iterate through each item
+        uniqueCitations.forEach((citation) => {
+          // Push each item to the stream
+          this.push(
+            `* [${citation.title}](${citation.url}), ${citation.heading}, ${citation.author}\n`
+          )
+        })
+
+        // No more data
+        this.push(null)
+      },
+    })
+
+    const outputStream = new PassThrough()
+
+    openAIStreamReadable.on('data', (chunk) => {
+      outputStream.write(chunk)
+    })
+
+    openAIStreamReadable.on('end', () => {
+      citationStream.pipe(outputStream)
+    })
+
+    // Convert to ReadableStream
+    const readableStreamOutput = new ReadableStream({
+      start(controller) {
+        outputStream.on('data', (chunk) => {
+          controller.enqueue(Uint8Array.from(Buffer.from(chunk)))
+        })
+
+        outputStream.on('end', () => {
+          controller.close()
+        })
+      },
+    })
 
     // Return a StreamingTextResponse, which can be consumed by the client
-    return new StreamingTextResponse(stream)
+    return new StreamingTextResponse(readableStreamOutput)
   } catch (err: unknown) {
     if (err instanceof UserError) {
       return new Response(
