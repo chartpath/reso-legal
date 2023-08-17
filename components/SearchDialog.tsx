@@ -137,7 +137,7 @@ export function SearchDialog() {
                                 { node, ...props } // eslint-disable-line
                               ) => (
                                 <a
-                                  className="text-slate-700 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
+                                  className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
                                   target="_blank"
                                   {...props}
                                 />

@@ -234,15 +234,16 @@ export default async function handler(req: NextRequest) {
       // objectMode: true, // enable object mode
 
       read() {
-        this.push('\n\n**Citations:**\n')
-        // Iterate through each item
-        uniqueCitations.forEach((citation) => {
-          // Push each item to the stream
-          this.push(
-            `* [${citation.title}](${citation.url}), ${citation.heading}, ${citation.author}\n`
-          )
-        })
-
+        if (uniqueCitations.length > 0) {
+          this.push('\n\n**Citations:**\n')
+          // Iterate through each item
+          uniqueCitations.forEach((citation) => {
+            // Push each item to the stream
+            this.push(
+              `* [${citation.title}](${citation.url}): ${citation.heading}, ${citation.author}\n`
+            )
+          })
+        }
         // No more data
         this.push(null)
       },
