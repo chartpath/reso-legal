@@ -101,14 +101,14 @@ export default async function handler(req: NextRequest) {
     const tokenizer = new GPT3Tokenizer({ type: 'gpt3' })
     let tokenCount = 0
     let contextText = ''
-    let citations: { page_id: any; heading: any }[] = []
+    let citationSections = []
 
     for (let i = 0; i < pageSections.length; i++) {
       const pageSection = pageSections[i]
       const content = pageSection.content
       const encoded = tokenizer.encode(content)
       tokenCount += encoded.text.length
-      citations.push({
+      citationSections.push({
         page_id: pageSection.page_id,
         heading: pageSection.heading,
       })
@@ -122,6 +122,37 @@ export default async function handler(req: NextRequest) {
     console.log(
       `Found ${pageSections.length} page sections (${tokenCount} tokens) for query: ${query}`
     )
+
+    const citationPageIds = new Set(citationSections.map((cs) => cs.page_id))
+
+    const { data: citationPagesMeta, error: getCitationsError } = await supabaseClient
+      .from('nods_page')
+      .select('id, author, title, url')
+      .filter('id', 'in', `(${Array.from(citationPageIds)})`)
+
+    if (getCitationsError) {
+      throw new ApplicationError('Failed to get citations', getCitationsError)
+    }
+
+    const citationsRaw = citationSections.map((cs) => {
+      const sectionPage = citationPagesMeta.filter((cp) => cp.id === cs.page_id)[0]
+      return {
+        author: sectionPage.author,
+        title: sectionPage.title,
+        url: sectionPage.url,
+        heading: cs.heading.replace(/[^\w\s]/gi, ''),
+      }
+    })
+
+    const uniqueTitles = new Set()
+    const uniqueHeadings = new Set()
+    const uniqueCitations = await citationsRaw.filter((cr) => {
+      const duplicate = uniqueHeadings.has(cr.heading) && uniqueTitles.has(cr.title)
+      uniqueHeadings.add(cr.heading)
+      uniqueTitles.add(cr.title)
+      return !duplicate
+    })
+    console.log(`Found citations ${JSON.stringify(uniqueCitations)}`)
 
     const prompt = codeBlock`
       ${oneLine`
@@ -203,12 +234,13 @@ export default async function handler(req: NextRequest) {
       // objectMode: true, // enable object mode
 
       read() {
-        this.push('\n\nCitations:\n')
+        this.push('\n\n**Citations:**\n')
         // Iterate through each item
-        citations.forEach((citation) => {
+        uniqueCitations.forEach((citation) => {
           // Push each item to the stream
-          this.push('\n')
-          this.push(JSON.stringify(citation))
+          this.push(
+            `* [${citation.title}](${citation.url}), ${citation.heading}, ${citation.author}\n`
+          )
         })
 
         // No more data
