@@ -11,6 +11,8 @@ import {
 } from 'openai-edge'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { ApplicationError, UserError } from '@/lib/errors'
+import { Readable, PassThrough } from 'readable-stream'
+import { write } from 'fs'
 
 const openAiKey = process.env.OPENAI_KEY
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -99,7 +101,7 @@ export default async function handler(req: NextRequest) {
     const tokenizer = new GPT3Tokenizer({ type: 'gpt3' })
     let tokenCount = 0
     let contextText = ''
-    let citations = []
+    let citations: { page_id: any; heading: any }[] = []
 
     for (let i = 0; i < pageSections.length; i++) {
       const pageSection = pageSections[i]
@@ -177,10 +179,68 @@ export default async function handler(req: NextRequest) {
     }
 
     // Transform the response into a readable stream
-    const stream = OpenAIStream(response)
+    const openAIReadableStream = OpenAIStream(response)
+
+    const openAIReadableStreamReader = openAIReadableStream.getReader()
+
+    const openAIStreamReadable = new Readable({
+      async read() {
+        try {
+          const result = await openAIReadableStreamReader.read()
+
+          if (result.done) {
+            this.push(null)
+          } else {
+            this.push(result.value)
+          }
+        } catch (err) {
+          this.emit('error', err)
+        }
+      },
+    })
+
+    const citationStream = new Readable({
+      // objectMode: true, // enable object mode
+
+      read() {
+        this.push('\n\nCitations:\n')
+        // Iterate through each item
+        citations.forEach((citation) => {
+          // Push each item to the stream
+          this.push('\n')
+          this.push(JSON.stringify(citation))
+        })
+
+        // No more data
+        this.push(null)
+      },
+    })
+
+    const outputStream = new PassThrough()
+
+    openAIStreamReadable.on('data', (chunk) => {
+      outputStream.write(chunk)
+    })
+
+    openAIStreamReadable.on('end', () => {
+      citationStream.pipe(outputStream)
+    })
+
+    // Convert to ReadableStream
+    const readableStreamOutput = new ReadableStream({
+      start(controller) {
+        outputStream.on('data', (chunk) => {
+          controller.enqueue(Uint8Array.from(Buffer.from(chunk)))
+        })
+
+        outputStream.on('end', () => {
+          controller.close()
+        })
+      },
+    })
 
     // Return a StreamingTextResponse, which can be consumed by the client
-    return new StreamingTextResponse(stream)
+    return new StreamingTextResponse(readableStreamOutput)
   } catch (err: unknown) {
     if (err instanceof UserError) {
       return new Response(
